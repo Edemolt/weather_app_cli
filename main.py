@@ -11,6 +11,7 @@ API_KEY = open("api_key.txt", "r").read()
 def set_city():
     global CITY
     CITY = input("Enter city name: ")
+    CITY = CITY.lower()
 
 set_city()
 
@@ -19,12 +20,13 @@ URL =  BASE_URL + "q=" + CITY + "&appid=" + API_KEY
 global response 
 response = requests.get(URL).json()
 
-options = ["Coordinates", "Weather", "Visibility", "Wind", "Clouds", "Sunrise/Sunset","Feels like","Exit"]
+options = ["Coordinates", "Weather", "Visibility", "Wind", "Clouds", "Sunrise/Sunset","Feels like","Change City","Exit"]
 
 @click.command()
 def get_coordiantes():
-    click.echo("Coordinates")
-    pass
+    latitude = response["coord"]["lat"]
+    longitude = response["coord"]["lon"]
+    click.echo(f"Latitude -> {latitude}\nLongitude -> {longitude}")
 
 @click.command()
 def get_weather():
@@ -98,6 +100,8 @@ def handle_selection():
     elif selected_option == 6:
         feels_like()
     elif selected_option == 7:
+        set_city()
+    elif selected_option == 8:
         exit()
 
 
