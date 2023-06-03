@@ -6,7 +6,7 @@ import time
 import sys
 
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
-API_KEY = "caeeedf4d555caa772563d80ee0bde04"
+API_KEY = ""
 
 def set_city():
     global CITY
