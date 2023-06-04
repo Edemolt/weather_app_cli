@@ -6,12 +6,11 @@ import time
 import sys
 
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather?"
-API_KEY = open("api_key.txt", "r").read()
+API_KEY = ""
 
 def set_city():
     global CITY
     CITY = input("Enter city name: ")
-    CITY = CITY.lower()
 
 set_city()
 
@@ -19,14 +18,18 @@ URL =  BASE_URL + "q=" + CITY + "&appid=" + API_KEY
 
 global response 
 response = requests.get(URL).json()
-
-options = ["Coordinates", "Weather", "Visibility", "Wind", "Clouds", "Sunrise/Sunset","Feels like","Change City","Exit"]
+if(response["cod"] == "404" or CITY == ""):
+    click.echo("Enter correct details")
+    sys.exit()
+options = ["Coordinates", "Weather", "Visibility", "Wind", "Clouds", "Sunrise/Sunset","Feels like","Exit"]
 
 @click.command()
 def get_coordiantes():
-    latitude = response["coord"]["lat"]
-    longitude = response["coord"]["lon"]
-    click.echo(f"Latitude -> {latitude}\nLongitude -> {longitude}")
+    lon,lat = response['coord']['lon'],response['coord']['lat']
+    click.echo("Coordinates->")
+    click.echo("Longitude -> " + str(lon) +"°")
+    click.echo("Latitude -> " + str(lat)+"°")
+    pass
 
 @click.command()
 def get_weather():
@@ -37,19 +40,18 @@ def get_weather():
 @click.command()
 def get_visibility():
     visibility = response["visibility"]
-    click.echo(f"Visibility -> {visibility}")
+    click.echo(f"Visibility -> {visibility} meters")
 
 @click.command()
 def get_wind():
     wind_speed = response["wind"]["speed"]
     wind_deg = response["wind"]["deg"]
-    wind_gust = response["wind"]["gust"]
-    click.echo(f"Wind speed -> {wind_speed} m/s\nWind degree -> {wind_deg}\nWind gust -> {wind_gust}")
+    click.echo(f"Wind speed -> {wind_speed} m/s\nWind degree -> {wind_deg}°")
 
 @click.command()
 def get_clouds():
     clouds = response["clouds"]["all"]
-    click.echo(f"Clouds -> {clouds}")
+    click.echo(f"Clouds -> {clouds} %")
 
 @click.command()
 def get_sunrise_sunset():
@@ -100,8 +102,6 @@ def handle_selection():
     elif selected_option == 6:
         feels_like()
     elif selected_option == 7:
-        set_city()
-    elif selected_option == 8:
         exit()
 
 
